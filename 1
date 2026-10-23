@@ -1,0 +1,46 @@
+Για να προσθέσεις ένα κουμπί που εκτελεί κάποια ενέργεια (π.χ. αλλάζει το κείμενο ή μετράει κλικ), χρειάζεται να αλλάξεις δύο αρχεία: το FXML (για να το εμφανίσεις στην οθόνη) και τον Controller (για να χειριστείς το πάτημά του).Επειδή το StackPane στο FXML στοιβάζει τα στοιχεία το ένα ακριβώς πάνω στο άλλο, η πιο βολική αλλαγή είναι να βάλεις ένα VBox (κάθετη διάταξη) ώστε το κουμπί να εμφανίζεται κάτω από το label.1. Ενημέρωση του hellofx.fxmlΠρόσθεσε το κουμπί (<Button>) και σύνδεσέ το με τη μέθοδο onButtonClick μέσω του attribute onAction="#onButtonClick":XML<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="15.0" prefHeight="300.0" prefWidth="400.0" 
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="hellofx.Controller">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label fx:id="label" text="Label" textAlignment="CENTER" />
+    <Button fx:id="myButton" text="Κάνε κλικ εδώ!" onAction="#onButtonClick" />
+</VBox>
+2. Ενημέρωση του Controller.javaΠρόσθεσε τη μέθοδο @FXML private void onButtonClick(), η οποία θα εκτελείται κάθε φορά που πατιέται το κουμπί:Javapackage hellofx;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+
+public class Controller {
+
+    @FXML
+    private Label label;
+
+    @FXML
+    private Button myButton;
+
+    private int clickCount = 0;
+
+    public void initialize() {
+        String javaVersion = System.getProperty("java.version");
+        String javafxVersion = System.getProperty("javafx.version");
+        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+    }
+
+    @FXML
+    private void onButtonClick() {
+        clickCount++;
+        label.setText("Το κουμπί πατήθηκε " + clickCount + " φορά/φορές!");
+    }
+}
+Τι άλλαξε στην πράξη:VBox αντί για StackPane: Αποτρέπει το κουμπί από το να επικαλύψει το Label.onAction="#onButtonClick": Συνδέει το συμβάν κλικ του κουμπιού απευθείας με τη μέθοδο onButtonClick() στον Controller.Το αρχείο Main.java παραμένει ακριβώς όπως είναι.
