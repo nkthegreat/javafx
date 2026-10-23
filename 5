@@ -1,0 +1,96 @@
+Εδώ είναι ένα πλήρες, έτοιμο παράδειγμα με GridPane, όπου στήνουμε μια μικρή φόρμα εισαγωγής (Όνομα, Email, Κουμπί Υποβολής) ώστε να δεις πώς λειτουργεί το σύστημα γραμμών και στηλών (GridPane.rowIndex και GridPane.columnIndex).1. hellofx.fxmlΣτο GridPane:hgap: Το οριζόντιο κενό ανάμεσα στις στήλες.vgap: Το κάθετο κενό ανάμεσα στις γραμμές.GridPane.columnIndex & GridPane.rowIndex: Καθορίζουν σε ποιο κελί του πίνακα $(X, Y)$ κάθεται κάθε στοιχείο (η αρίθμηση ξεκινά από το 0).GridPane.columnSpan="2": Κάνει το στοιχείο να πιάνει δύο στήλες μαζί (όπως το merge cells στο Excel).XML<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane alignment="CENTER" hgap="12.0" vgap="12.0" prefHeight="350.0" prefWidth="450.0" 
+          xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+          fx:controller="hellofx.Controller">
+    
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+    </padding>
+
+    <!-- Γραμμή 0: Όνομα -->
+    <Label text="Όνομα:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <TextField fx:id="txtName" promptText="π.χ. Νίκος" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+    <!-- Γραμμή 1: Email -->
+    <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="txtEmail" promptText="π.χ. user@example.com" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+    <!-- Γραμμή 2: Κουμπί Υποβολής (πιάνει και τις 2 στήλες) -->
+    <Button fx:id="btnSubmit" text="Υποβολή Στοιχείων" onAction="#onSubmitClick" 
+            maxWidth="Infinity" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2"
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 5;" />
+
+    <!-- Γραμμή 3: Μήνυμα Αποτελέσματος (πιάνει και τις 2 στήλες) -->
+    <Label fx:id="lblResult" text="Συμπληρώστε τα πεδία παραπάνω." alignment="CENTER" maxWidth="Infinity"
+           GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+
+</GridPane>
+2. Controller.javaΟ Controller διαβάζει τα δεδομένα από τα δύο TextField μέσω της .getText() και ενημερώνει το Label:Javapackage hellofx;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
+public class Controller {
+
+    @FXML
+    private TextField txtName;
+
+    @FXML
+    private TextField txtEmail;
+
+    @FXML
+    private Button btnSubmit;
+
+    @FXML
+    private Label lblResult;
+
+    @FXML
+    public void initialize() {
+        // Αρχικοποίηση αν χρειάζεται
+    }
+
+    @FXML
+    private void onSubmitClick() {
+        String name = txtName.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        if (name.isEmpty() || email.isEmpty()) {
+            lblResult.setStyle("-fx-text-fill: #e74c3c;"); // Κόκκινο χρώμα για σφάλμα
+            lblResult.setText("Παρακαλώ συμπληρώστε και τα δύο πεδία!");
+        } else {
+            lblResult.setStyle("-fx-text-fill: #27ae60;"); // Πράσινο χρώμα για επιτυχία
+            lblResult.setText("Καλωσόρισες, " + name + " (" + email + ")!");
+        }
+    }
+}
+3. Main.javaΠαραμένει ο ίδιος εκκινητής:Javapackage hellofx;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("hellofx.fxml"));
+        primaryStage.setTitle("GridPane Demo");
+        primaryStage.setScene(new Scene(root, 450, 350));
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
